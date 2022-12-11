@@ -4,6 +4,7 @@ import Router, { useRouter } from 'next/router'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { Hero } from '@/components/Hero'
+import { toast } from 'react-toastify'
 
 export default function ClientDetails() {
   const router = useRouter()
@@ -33,8 +34,18 @@ export default function ClientDetails() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log(data)
-    localStorage.setItem('clientData', JSON.stringify(data))
-    router.push('/postLead')
+    if (data.phone.length != 10) {
+      toast.error('Incorrect Phone!!!', {
+        position: toast.POSITION.TOP_CENTER,
+      })
+    } else if (data.zipcode.length != 5) {
+      toast.error('Incorrect Zip Code!!!', {
+        position: toast.POSITION.TOP_CENTER,
+      })
+    } else {
+      localStorage.setItem('clientData', JSON.stringify(data))
+      router.push('/postLead')
+    }
   }
   return (
     <div>
@@ -143,7 +154,7 @@ export default function ClientDetails() {
                 type="tel"
                 id="phone"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500   "
-                placeholder="123-45-678"
+                placeholder="123-45-678-90"
                 value={data.phone}
                 onChange={(e) => handleData('phone', e.target.value)}
                 required
@@ -177,7 +188,7 @@ export default function ClientDetails() {
                 type="number"
                 id="last_name"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500   "
-                placeholder="1234"
+                placeholder="12345"
                 value={data.zipcode}
                 onChange={(e) => handleData('zipcode', e.target.value)}
                 required

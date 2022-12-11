@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useId, useRef, useState } from 'react'
+import { useId, useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { motion, useInView, useMotionValue } from 'framer-motion'
@@ -17,6 +17,7 @@ import logoForbes from '@/images/logos/forbes.svg'
 import logoHuffpost from '@/images/logos/huffpost.svg'
 import logoTechcrunch from '@/images/logos/techcrunch.svg'
 import logoWired from '@/images/logos/wired.svg'
+import { useRouter } from 'next/router'
 
 function BackgroundIllustration(props) {
   let id = useId()
@@ -246,30 +247,57 @@ function Chart({
 }
 
 export function Hero() {
+  const router = useRouter()
+  const autoCompleteRef = useRef()
+  const inputRef = useRef()
+  const onChangeAddress = () => {
+    router.push('/services')
+  }
+  const options = {
+    componentRestrictions: { country: 'us' },
+    fields: ['address_components', 'geometry', 'icon', 'name'],
+    types: ['address'],
+  }
+  useEffect(() => {
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      options
+    )
+    autocomplete.addListener('place_changed', () => onChangeAddress())
+  }, [])
+
   return (
     <div className="overflow-hidden py-20 sm:py-32 lg:pb-32 xl:pb-36">
       <Container>
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-8 lg:gap-y-20">
           <div className="relative z-10 mx-auto max-w-2xl lg:col-span-7 lg:max-w-none lg:pt-6 xl:col-span-6">
             <h1 className="text-4xl font-medium tracking-tight text-gray-900">
-            Need your Lawn Cut?
+              Need your Lawn Cut?
             </h1>
             <p className="mt-6 text-lg text-gray-600">
-            We are a landscaping company. Enter Your Street Address Below To Get An Instant Quote For Your Home.
+              We are a landscaping company. Enter Your Street Address Below To
+              Get An Instant Quote For Your Home.
             </p>
-            <img src="https://cdn-icons-png.flaticon.com/512/2268/2268142.png" alt="" className='w-[50px] h-[50px] mt-5'/>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2268/2268142.png"
+              alt=""
+              className="mt-5 h-[50px] w-[50px]"
+            />
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-4">
-             
-            <div className="mb-6 mx-auto md:mx-0">
-        <input type="text" id="default-input" placeholder='Enter Your Street Address' class="bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-900 focus:border-gray-900 block w-[300px] md:w-[500px] p-2.5"/>
-    </div> 
+              <div className="mx-auto mb-6 block w-[300px] rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-900 focus:ring-gray-900 md:mx-0 md:w-[500px]">
+                <input
+                  ref={inputRef}
+                  placeholder="Enter Your Street Address"
+                  className="block w-[300px]  rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-900 focus:ring-gray-900 md:w-[500px]"
+                />
+              </div>
             </div>
           </div>
           <div className="relative mt-10 sm:mt-20 lg:col-span-5 lg:row-span-2 lg:mt-0 xl:col-span-6">
             <BackgroundIllustration className="absolute left-1/2 top-4 h-[1026px] w-[1026px] -translate-x-1/3 stroke-gray-300/70 [mask-image:linear-gradient(to_bottom,white_20%,transparent_75%)] sm:top-16 sm:-translate-x-1/2 lg:-top-16 lg:ml-12 xl:-top-14 xl:ml-0" />
             <div className="-mx-4 h-[448px] px-9 [mask-image:linear-gradient(to_bottom,white_60%,transparent)] sm:mx-0 lg:absolute lg:-inset-x-10 lg:-top-10 lg:-bottom-20 lg:h-auto lg:px-0 lg:pt-10 xl:-bottom-32">
               <PhoneFrame className="mx-auto max-w-[366px]" priority>
-              <img src="/hero.png" alt="" />
+                <img src="/hero.png" alt="" />
               </PhoneFrame>
             </div>
           </div>
